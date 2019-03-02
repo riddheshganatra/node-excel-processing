@@ -1,0 +1,26 @@
+{
+  "name": "excel-processing",
+  "version": "1.0.0",
+  "description": "process excel file in node js using streams",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "excel",
+    "processing",
+    "transform",
+    "stream",
+    "multer",
+    "multer custom storage"
+  ],
+  "author": "Riddhesh Ganatra",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "multer": "1.4.1",
+    "xlsx-write-stream": "0.0.19",
+    "excel-stream": "https://github.com/riddheshganatra/excel-stream.git"
+  }
+}
