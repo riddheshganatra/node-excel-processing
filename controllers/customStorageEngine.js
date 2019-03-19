@@ -9,7 +9,7 @@ function MyCustomStorage(opts) {
     this.getDestination = (opts.destination || getDestination)
 }
 
-MyCustomStorage.prototype._handleFile = async function _handleFile(req, file, cb) {
+MyCustomStorage.prototype._handleFile = function _handleFile(req, file, cb) {
 
     // set input stream for xlsxWriter stream which will be used to downlaod excel
     req.xlsxWriter.setInputStream(
@@ -34,6 +34,8 @@ module.exports = function (opts) {
     return new MyCustomStorage(opts)
 }
 
+// custom logic start:
+
 
 // return transform stream which will do proccessing
 function getTransformObject() {
@@ -41,14 +43,12 @@ function getTransformObject() {
         writableObjectMode: true,
         readableObjectMode: true,
         transform(chunk, encoding, callback) {
-
             // to check current memory usage
             const used = process.memoryUsage().heapUsed / 1024 / 1024;
             // console.log('\033c');
             console.log(`The script uses approximately ${Math.round(used * 100) / 100} MB`);
             // records is blank array decalred below 
             this.records.push(chunk);
-
             // batch processing of records
             if (this.records.length == 10) {
                 saveDataToDB(this.records)
@@ -57,18 +57,14 @@ function getTransformObject() {
                         data.forEach((record) => {
                             this.push([...Object.values(record)])
                         })
-                        // console.log(this.records);
-
                         // reset records for batch processing
                         this.records = [];
-
                         callback();
                     })
             }
             else {
                 callback();
             }
-
         },
         flush(done) {
             // flush we repeat steps for last records,
@@ -79,8 +75,6 @@ function getTransformObject() {
                         data.forEach((record) => {
                             this.push([...Object.values(record)])
                         })
-                        // console.log(this.records);
-
                         this.records = [];
                         console.log('done processing')
                         done();
@@ -88,13 +82,10 @@ function getTransformObject() {
             } else {
                 console.log('done processing')
                 done();
-
             }
         }
     });
-
     jsonToDb.records = [];
-
     return jsonToDb;
 }
 
